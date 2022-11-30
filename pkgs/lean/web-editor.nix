@@ -13,7 +13,7 @@ symlinkJoin {
         sha256 = "sha256-z8jlRWmiacexL5XrbAArfmPktGGqvDq3th21S4TNTRw=";
       };
 
-      npmDepsHash = lib.fakeHash;
+      npmDepsHash = "sha256-qwNxQNdyIRFpLOs5E/aUsS/3wzC3vjJ7quOIna/KWGk=";
 
       installPhase = ''
         runHook preInstall
