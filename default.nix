@@ -7,14 +7,25 @@
 #     nix-build -A mypackage
 
 { pkgs ? import <nixpkgs> { } }:
+let
+  callPackage = pkgs.lib.callPackageWith (pkgs // (builtins.removeAttrs self [ "lib" "modules" "overlays" ]));
+  self = rec {
+    # Propagate this custom callPackage to children.
+    inherit callPackage;
 
-{
-  # The `lib`, `modules`, and `overlay` names are special
-  lib = import ./lib { inherit pkgs; }; # functions
-  modules = import ./modules; # NixOS modules
-  overlays = import ./overlays; # nixpkgs overlays
+    # The `lib`, `modules`, and `overlay` names are special
+    lib = import ./lib { inherit pkgs; }; # functions
+    modules = import ./modules; # NixOS modules
+    overlays = import ./overlays; # nixpkgs overlays
 
-  lean = (pkgs.callPackage ./pkgs/lean { }) // { recurseForDerivations = true; }; # Build all versions.
-  # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
-  # ...
-}
+    lean = (callPackage ./pkgs/lean { }) // { recurseForDerivations = true; }; # Build all versions.
+    makeLeanGame = callPackage ./pkgs/lean/make-lean-game.nix { };
+    leanGames = callPackage ./pkgs/lean/lean-games { };
+    lean-game-maker = callPackage ./pkgs/lean/lean-game-maker {
+      python = pkgs.python3;
+    };
+
+    emscriptenPackages.lean = pkgs.lib.mapAttrs (_: p: p.emscripten) (pkgs.lib.filterAttrs (_: p: p ? "emscripten") lean);
+  };
+in
+  self
