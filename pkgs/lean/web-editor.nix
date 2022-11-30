@@ -1,8 +1,11 @@
-{ npmlock2nix, symlinkJoin, fetchFromGitHub, lean, library ? lean.coreLibrary }:
+{ buildNpmPackage, lib, symlinkJoin, fetchFromGitHub, lean, library ? lean.coreLibrary }:
 symlinkJoin {
   name = "${lean.name}-web-editor-using-${library.name}";
   paths = [
-    (npmlock2nix.build {
+    (buildNpmPackage {
+      pname = "lean-web-editor";
+      version = "unstable";
+
       src = fetchFromGitHub {
         owner = "RaitoBezarius";
         repo = "lean-web-editor";
@@ -10,8 +13,15 @@ symlinkJoin {
         sha256 = "sha256-z8jlRWmiacexL5XrbAArfmPktGGqvDq3th21S4TNTRw=";
       };
 
-      installPhase = "cp -r dist $out";
-      buildCommands = [ "npm run build" ];
+      npmDepsHash = lib.fakeHash;
+
+      installPhase = ''
+        runHook preInstall
+
+        cp -r dist $out
+
+        runHook postInstall
+      '';
     })
     lean.emscripten
     library

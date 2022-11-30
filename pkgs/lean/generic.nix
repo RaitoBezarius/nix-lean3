@@ -1,5 +1,5 @@
 { lib, stdenv, fetchFromGitHub, cmake, gmp, coreutils, callPackage, version, src, githash
-, buildEmscriptenPackage, emscripten, leanUtils, npmlock2nix, disableTests ? false }:
+, buildEmscriptenPackage, emscripten, leanUtils, disableTests ? false }:
 let
   drv = { checkOleanVersion ? true, enableAdvancedLogging ? false }: stdenv.mkDerivation (finalAttrs: {
     pname = "lean${lib.optionalString (!checkOleanVersion) "no-olean-version-check"}${lib.optionalString enableAdvancedLogging "-extra-olean-verbosity"}";
@@ -54,7 +54,6 @@ let
       withLibrary = leanUtils.mkLibrary { lean = myself; };
       coreLibrary = leanUtils.mkLibrary { lean = myself; } {};
       webEditor = callPackage ./web-editor.nix {
-        inherit npmlock2nix;
         lean = myself;
       };
       debugOleans = drv { enableAdvancedLogging = true; inherit checkOleanVersion; };
