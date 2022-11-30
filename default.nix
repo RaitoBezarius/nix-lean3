@@ -14,7 +14,7 @@
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  lean = pkgs.callPackage ./pkgs/lean { };
+  lean = (pkgs.callPackage ./pkgs/lean { }) // { recurseForDerivations = true; }; # Build all versions.
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...
 }
