@@ -12,7 +12,7 @@ let
       };
       disableTests = isImportantRelease version;
       inherit (releaseInfo) githash;
-    } // { recurseForDerivations = true; }); # Build all the variants.
+    });
   };
   brokenReleases = [];
   # Disable tests for important releases as they will not work out of the box.

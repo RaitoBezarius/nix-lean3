@@ -25,7 +25,11 @@ let
       python = pkgs.python3;
     };
 
-    emscriptenPackages.lean = pkgs.lib.mapAttrs (_: p: p.emscripten) (pkgs.lib.filterAttrs (_: p: p ? "emscripten") lean);
+    emscriptenPackages = {
+      lean = pkgs.lib.mapAttrs (_: p: p.emscripten) (pkgs.lib.filterAttrs (_: p: p ? "emscripten") lean) // { recurseForDerivations = true; };
+
+      recurseForDerivations = true;
+    };
   };
 in
   self
