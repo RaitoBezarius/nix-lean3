@@ -1,10 +1,20 @@
-{ lib, buildEmscriptenPackage, cmake, m4, libtool, texinfo, leanSrc, version, githash, checkOleanVersion ? true, enableAdvancedLogging ? false }:
+{ lib, buildEmscriptenPackage, cmake, m4, libtool, texinfo, leanSrc, version, githash, checkOleanVersion ? true, withSourceMaps ? true, enableAdvancedLogging ? false }:
 let
   gmpSrc = fetchTarball {
     url = "https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2";
     sha256 = "15xl9qaacbq9i5822g8nvr4xx859pypvxjngcig5344pyi14rck5";
   };
   drv = { useOldOleans ? false }: buildEmscriptenPackage rec {
+    meta = with lib; {
+      description = "Automatic and interactive theorem prover (emscripten version)";
+      homepage = "https://leanprover.github.io/";
+      changelog =
+        "https://github.com/leanprover-community/lean/blob/v${version}/doc/changes.md";
+      license = licenses.asl20;
+      platforms = platforms.unix;
+      maintainers = with maintainers; [ raitobezarius ];
+    };
+
     pname = "lean${lib.optionalString useOldOleans "-with-old-oleans"}${lib.optionalString (!checkOleanVersion) "-no-olean-version-check"}${lib.optionalString enableAdvancedLogging "-extra-olean-verbosity"}";
     inherit version;
     buildInputs = [ cmake libtool texinfo ];
