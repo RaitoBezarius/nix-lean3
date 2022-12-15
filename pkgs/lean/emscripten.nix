@@ -60,12 +60,12 @@ let
     buildPhase = ''
       export EM_CACHE=$TMPDIR/emscripten-cache
       cd $TMPDIR/build
-      emmake make lean_js_js
-      emmake make lean_js_wasm
+      # emmake make lean_js_js
+      emmake make lean_js_wasm -j$NIX_BUILD_CORES
     '';
 
     installPhase = ''
-      mkdir -p $out/
+      mkdir -p $out
       cp $TMPDIR/build/shell/lean_js_* $out/
     '';
 
