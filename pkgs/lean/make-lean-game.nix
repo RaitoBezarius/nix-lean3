@@ -8,8 +8,9 @@ let
     inherit writeTOML;
   };
 in
-  { src, gameConfig, leanpkgTOML ? "${src}/leanpkg.toml", replaceLocalTOML ? false,
-    leanModifier ? lib.id, ... }@args:
+  { src, gameConfig ? builtins.fromTOML (builtins.readFile "${src}/game_config.toml"), leanpkgTOML ? "${src}/leanpkg.toml", replaceLocalTOML ? false,
+    prebuilt ? true,
+    emscriptenPackage ? (pkg: if prebuilt then pkg.prebuiltEmscripten else pkg.emscripten), ... }@args:
   let
     leanpkgConfig = builtins.fromTOML (builtins.readFile leanpkgTOML);
     gameName = gameConfig.name or leanpkgConfig.name;
@@ -68,41 +69,8 @@ in
     paths = [
       (mkGameData ({ inherit src gameName gameConfig leanpkgConfig leanpkgTOML; } // args))
       lean-game-maker.web
-      (leanModifier lean.${leanVersion}).emscripten
+      (emscriptenPackage lean.${leanVersion})
       # lean.${leanVersion}.coreLibrary
       library
     ];
   }
-# (import ./make-game-data.nix)
-/*{ lib, git, remarshal, lean, writeText, runCommand, lean-game-maker, stdenvNoCC }:
-let
-  writeJSON = config: writeText "config.json" (builtins.toJSON config);
-  writeTOML = config: runCommand "config.toml" {} ''
-    ${remarshal}/bin/json2toml < ${writeJSON config} > $out
-  '';
-  gameConfigFile = writeTOML gameConfig;
-  leanpkgConfig = (builtins.fromTOML (builtins.readFile leanpkgTOML));
-  gameName = gameConfig.name or leanpkgConfig.name;
-in
-# assert that gameConfig.name must be not null!
-assert gameName != null;
-stdenvNoCC.mkDerivation {
-  pname = "lean-game-${lib.strings.sanitizeDerivationName gameConfig.name}";
-  inherit (gameConfig) version;
-
-  buildInputs = [ lean-game-maker.python ];
-
-  buildPhase = ''
-    [ ! -f "./game_config.toml" ] && ln -s ${gameConfigFile} game_config.toml
-    make-lean-game \
-      --outdir $out \
-      --locale ${locale} \
-      --devmode=${toString development}
-  '';
-
-  installPhase = ''
-    # Do nothing.
-  '';
-
-  inherit src;
-}*/

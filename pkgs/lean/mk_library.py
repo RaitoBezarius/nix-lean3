@@ -165,6 +165,8 @@ with zipfile.ZipFile(
                 print("duplicate: {0}".format(fn))
             else:
                 zf.write(fn, arcname=str(rel))
+                # Add .lean in the bundle.
+                zf.write(fn.with_suffix(".lean"), arcname=str(rel.with_suffix(".lean")))
                 oleans[str(rel)[:-6]] = lib_name
                 num_olean[lib_name] += 1
                 already_seen.add(rel)

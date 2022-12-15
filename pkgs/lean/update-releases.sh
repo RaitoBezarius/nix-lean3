@@ -7,6 +7,11 @@ function fetch_sha256() {
 	nix-prefetch fetchFromGitHub --owner $LEAN_OWNER --repo $LEAN_REPOSITORY --rev $1 2>/dev/null
 }
 
+function fetch_emscripten_sha256() {
+	local version="$1"
+	nix-prefetch fetchzip --url "https://github.com/leanprover-community/lean/releases/download/v${version#v}/lean-${version#v}--browser.zip" 2>/dev/null
+}
+
 # Get all releases in array $releases
 mapfile -t releases < <(curl "https://api.github.com/repos/$LEAN_OWNER/$LEAN_REPOSITORY/tags?per_page=100" | jq -c '.[] | {name: .name, githash: .commit.sha} | @base64')
 # releases=("v3.32.1" "v3.32.0")
@@ -27,6 +32,7 @@ do
 		continue
 	fi
 	sha256=$(fetch_sha256 "$release")
-	cat <<< $(jq ". + {\"$release\": {owner: \"$LEAN_OWNER\", repo: \"$LEAN_REPOSITORY\", sha256: \"$sha256\", rev: \"$release\", githash: \"$githash\"}}" $RELEASE_JSON_OUTPUT) > $RELEASE_JSON_OUTPUT
-	echo "[+] Updated release $release (sha256: $sha256) in $RELEASE_JSON_OUTPUT"
+	emscripten_sha256=$(fetch_emscripten_sha256 "$release")
+	cat <<< $(jq ". + {\"$release\": {owner: \"$LEAN_OWNER\", repo: \"$LEAN_REPOSITORY\", sha256: \"$sha256\", emscripten_sha256: \"$emscripten_sha256\", rev: \"$release\", githash: \"$githash\"}}" $RELEASE_JSON_OUTPUT) > $RELEASE_JSON_OUTPUT
+	echo "[+] Updated release $release (sha256: $sha256, emscripten sha256: $emscripten_sha256) in $RELEASE_JSON_OUTPUT"
 done

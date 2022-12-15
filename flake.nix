@@ -1,5 +1,5 @@
 {
-  description = "My personal NUR repository";
+  description = "Nix expressions for Lean 3, including emscripten and automatic Lean Game assembler";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   outputs = { self, nixpkgs }:
     let
