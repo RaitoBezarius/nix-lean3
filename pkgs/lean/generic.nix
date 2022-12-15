@@ -41,7 +41,7 @@ let
     '';
 
     passthru = let
-      myself = drv { inherit checkOleanVersion enableAdvancedLogging; };
+      myself = finalAttrs.finalPackage;
     in
     {
       emscripten = callPackage ./emscripten.nix {
