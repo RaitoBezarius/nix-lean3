@@ -14,10 +14,10 @@ let
       inherit (releaseInfo) githash;
     });
   };
-  brokenReleases = [];
+  brokenReleases = [ ];
   # Disable tests for important releases as they will not work out of the box.
   importantReleases = [];
-  minimalVersion = "v3.23.0";
+  minimalVersion = "v3.31.0";
   releaseIncludedIn = list: v: builtins.any (v2: v == v2) list;
   isBrokenRelease = releaseIncludedIn brokenReleases;
   isImportantRelease = releaseIncludedIn importantReleases;
