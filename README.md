@@ -16,3 +16,8 @@ This repository offers many Lean 3 versions, useful for:
 This flake cannot be used in pure evaluation mode if you are using mathlib cache because it relies on a non-sha256 pinned `fetchTarball` call.
 
 I will add a GitHub Action which will fetch over multiple revisions of mathlib and compile a JSON of SHA256 so it can be used for pure evaluation mode.
+
+## What Is Not Cached And Should
+
+- Web editor "base"
+- Lean core libraries for each version
