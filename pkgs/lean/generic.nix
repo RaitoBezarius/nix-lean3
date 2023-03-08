@@ -50,7 +50,7 @@ let
         leanSrc = src;
         inherit version githash enableAdvancedLogging checkOleanVersion;
       };
-      prebuiltEmscripten = callPackage ./prebuilt-emscripten.nix { inherit version; };
+      emscripten-bin = callPackage ./prebuilt-emscripten.nix { inherit version; };
       mkLibraryScript = leanUtils.mkLibraryScript { lean = myself; };
       withLibrary = leanUtils.mkLibrary { lean = myself; };
       coreLibrary = leanUtils.mkLibrary { lean = myself; } {};

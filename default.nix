@@ -18,7 +18,7 @@ let
     modules = import ./modules; # NixOS modules
     overlays = import ./overlays; # nixpkgs overlays
 
-    lean = (callPackage ./pkgs/lean { }) // { recurseForDerivations = true; }; # Build all versions.
+    lean = (callPackage ./pkgs/lean { }); # TODO(emscripten): // { recurseForDerivations = true; }; # Build all versions.
     makeLeanGame = callPackage ./pkgs/lean/make-lean-game.nix { };
     leanGames = callPackage ./pkgs/lean/lean-games { };
     lean-game-maker = callPackage ./pkgs/lean/lean-game-maker {
@@ -26,8 +26,7 @@ let
     };
 
     emscriptenPackages = {
-      lean = pkgs.lib.mapAttrs (_: p: p.emscripten) (pkgs.lib.filterAttrs (_: p: p ? "emscripten") lean) // { recurseForDerivations = true; };
-
+      lean-bin = pkgs.lib.mapAttrs (_: p: p.emscripten-bin) (pkgs.lib.filterAttrs (_: p: p ? "emscripten-bin") lean);
       recurseForDerivations = true;
     };
   };
