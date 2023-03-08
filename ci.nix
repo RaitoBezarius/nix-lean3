@@ -28,8 +28,8 @@ let
       lean.${leanVersion}.coreLibrary
       lean.${leanVersion}.emscripten-bin
       lean.${leanVersion}.webEditor
-      lean.${leanVersion}.debugOleans
-      lean.${leanVersion}.noOleanVersionCheck
+      # TODO: lean.${leanVersion}.debugOleans
+      # TODO: lean.${leanVersion}.noOleanVersionCheck
     ] else []);
 in
 rec {
