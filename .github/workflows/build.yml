@@ -1,4 +1,4 @@
-name: "Build and populate cache"
+name: "Build and cache Lean versions"
 on:
   pull_request:
   push:
@@ -35,6 +35,19 @@ jobs:
           - nixpkgs=channel:nixos-unstable
           - nixpkgs=channel:nixpkgs-unstable
           - nixpkgs=channel:nixos-22.11
+        leanVersion:
+          - 3_50_3
+          - 3_50_2
+          - 3_50_1
+          - 3_50_0
+          - 3_49_1
+          - 3_49_0
+          - 3_48_0
+          - 3_47_0
+          - 3_46_0
+          - 3_45_0
+          - 3_44_0
+          - 3_43_0
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -65,8 +78,8 @@ jobs:
           --drv-path --show-trace \
           -I nixpkgs=$(nix-instantiate --find-file nixpkgs) \
           -I $PWD
-    - name: Build nix packages
-      run: nix shell -f '<nixpkgs>' nix-build-uncached -c nix-build-uncached ci.nix -A cacheOutputs
+    - name: "Build set of Lean packages for ${{ matrix.leanVersion }}"
+      run: nix shell -f '<nixpkgs>' nix-build-uncached -c nix-build-uncached ci.nix -A cacheOutputs --argstr leanVersion "${{ matrix.leanVersion }}"
     - name: Trigger NUR update
       # Do not trigger NUR updates for now.
       # Don't replace <YOUR_REPO_NAME> here!
