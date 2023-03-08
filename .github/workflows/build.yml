@@ -56,9 +56,6 @@ jobs:
         name: ${{ matrix.cachixName }}
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - name: Update Lean releases
-      run: ./update-releases.sh
-      working-directory: pkgs/lean
     - name: Check evaluation
       run: |
         nix-env -f . -qa \* --meta --xml \
