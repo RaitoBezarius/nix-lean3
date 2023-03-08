@@ -10,7 +10,7 @@ let
 in
   { src, gameConfig ? builtins.fromTOML (builtins.readFile "${src}/game_config.toml"), leanpkgTOML ? "${src}/leanpkg.toml", replaceLocalTOML ? false,
     prebuilt ? true,
-    emscriptenPackage ? (pkg: if prebuilt then pkg.prebuiltEmscripten else pkg.emscripten), ... }@args:
+    emscriptenPackage ? (pkg: if prebuilt then pkg.emscripten-bin else pkg.emscripten), ... }@args:
   let
     leanpkgConfig = builtins.fromTOML (builtins.readFile leanpkgTOML);
     gameName = gameConfig.name or leanpkgConfig.name;
