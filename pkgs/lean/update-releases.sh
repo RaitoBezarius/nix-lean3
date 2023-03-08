@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p nix-prefetch jq
 LEAN_OWNER=leanprover-community
 LEAN_REPOSITORY=lean
 RELEASE_JSON_OUTPUT=./releases.json

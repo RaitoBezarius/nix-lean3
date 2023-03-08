@@ -9,6 +9,7 @@
 { pkgs ? import <nixpkgs> { } }:
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // (builtins.removeAttrs self [ "lib" "modules" "overlays" ]));
+  leanAttribute = leanset: attr: pkgs.lib.mapAttrs (_: p: p.${leanAttribute}) (pkgs.lib.filterAttrs (_: p: p ? attr) leanset) // { recurseForDerivations = true; };
   self = rec {
     # Propagate this custom callPackage to children.
     inherit callPackage;
@@ -18,7 +19,7 @@ let
     modules = import ./modules; # NixOS modules
     overlays = import ./overlays; # nixpkgs overlays
 
-    lean = (callPackage ./pkgs/lean { }); # TODO(emscripten): // { recurseForDerivations = true; }; # Build all versions.
+    lean = (callPackage ./pkgs/lean { }) // { recurseForDerivations = true; }; # Build all versions.
     makeLeanGame = callPackage ./pkgs/lean/make-lean-game.nix { };
     leanGames = callPackage ./pkgs/lean/lean-games { };
     lean-game-maker = callPackage ./pkgs/lean/lean-game-maker {
@@ -26,7 +27,17 @@ let
     };
 
     emscriptenPackages = {
-      lean-bin = pkgs.lib.mapAttrs (_: p: p.emscripten-bin) (pkgs.lib.filterAttrs (_: p: p ? "emscripten-bin") lean);
+      lean-bin = leanAttribute lean "emscripten-bin";
+      recurseForDerivations = true;
+    };
+
+    webPackages = {
+      lean-editor = leanAttribute lean "webEditor";
+      recurseForDerivations = true;
+    };
+
+    leanPackages = {
+      core-library = leanAttribute lean "coreLibrary";
       recurseForDerivations = true;
     };
   };

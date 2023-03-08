@@ -2,7 +2,7 @@
 let
   mergeMap = f: set: builtins.foldl' (x: acc: x // acc) {} (map (k: f k set.${k}) (builtins.attrNames set));
   leanReleases = lib.importJSON ./releases.json;
-  processVersionName = ver: lib.removePrefix "v" (lib.replaceChars ["."] ["_"] ver);
+  processVersionName = ver: lib.removePrefix "v" (lib.replaceStrings ["."] ["_"] ver);
   mkLeanRelease = version: releaseInfo: {
     ${processVersionName version} = (callPackage ./generic.nix {
       inherit version emscripten;
