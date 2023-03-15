@@ -19,5 +19,10 @@ I will add a GitHub Action which will fetch over multiple revisions of mathlib a
 
 ## What Is Not Cached And Should
 
-- Web editor "base"
-- Lean core libraries for each version
+- `oleans` debugger version (patch is broken across all versions)
+- no olean version check version (patch is broken across all versions)
+
+## TODO
+
+- Add automation to upgrade nixpkgs
+- Fix emscripten 3.x branch
