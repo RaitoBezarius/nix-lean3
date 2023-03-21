@@ -22,13 +22,14 @@ rec {
         mkdir -p $out/
         ${if bundlePath != null then ''
           mkdir -p $TMPDIR/bundle
-          cp -rv ${bundlePath}/* $TMPDIR/bundle/
+          # It is important to copy by flattening the symlinks. Otherwise Lean cannot write the oleans.
+          cp -Lrv ${bundlePath}/* $TMPDIR/bundle/
           chmod -R u+rw $TMPDIR/bundle
         '' else ""}
         cd $TMPDIR
         ${mkLibraryScript { inherit lean; }}/bin/lean-mklibrary ${lib.optionalString useOldOleans "-t "}${lib.optionalString (bundlePath != null) "-i $TMPDIR/bundle "}-o $out/library.zip${lib.optionalString coreOnly " -c"}
         # For debugging purpose
-        ${if bundlePath != null then "cp -rv $TMPDIR/bundle $out/final-bundle" else ""}
+        # ${if bundlePath != null then "cp -rv $TMPDIR/bundle $out/final-bundle" else ""}
       '';
     in
     if bundlePath != null then
